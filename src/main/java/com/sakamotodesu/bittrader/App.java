@@ -6,9 +6,12 @@ package com.sakamotodesu.bittrader;
 
 public class App {
 
-    public static void main(String[] args) {
-        BitflyerApi bitflyerApi = new BitflyerApi();
-        bitflyerApi.request();
+    public static void main(String[] args) throws InterruptedException {
+        while (true) {
+            BitflyerApi bitflyerApi = new BitflyerApi();
+            bitflyerApi.request();
+            Thread.sleep(60000);
+        }
     }
 
     public String getGreeting() {
