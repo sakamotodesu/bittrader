@@ -43,6 +43,9 @@ jobs:
 
       # run tests!
       - run: gradle test
+      - persist_to_workspace:
+          root: ~/
+          paths: build/libs
 workflows:
   build-and-deploy:
     jobs:
@@ -50,6 +53,8 @@ workflows:
       - aws-ecr/build-and-push-image:
           requires:
             - build
+          - attach_workspace:
+            at: ~/
           account-url: AWS_ACCOUNT_URL
           repo: ${AWS_RESOURCE_NAME_PREFIX}
           region: AWS_DEFAULT_REGION
