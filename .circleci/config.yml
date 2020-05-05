@@ -44,8 +44,8 @@ jobs:
       # run tests!
       - run: gradle test
       - persist_to_workspace:
-          root: .
-          paths: build/libs
+          root: ~/
+          paths: .
 workflows:
   build-and-deploy:
     jobs:
