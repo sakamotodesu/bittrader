@@ -43,6 +43,7 @@ jobs:
 
       # run tests!
       - run: gradle test
+      - run: gradle shadowjar
       - persist_to_workspace:
           root: ~/
           paths: .
