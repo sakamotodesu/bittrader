@@ -56,13 +56,13 @@ workflows:
             - build
           account-url: AWS_ACCOUNT_URL
           attach-workspace: true
-          repo: ${AWS_RESOURCE_NAME_PREFIX}
+          repo: ${APP_PREFIX}
           region: AWS_DEFAULT_REGION
           tag: ${CIRCLE_SHA1}
       - aws-ecs/deploy-service-update:
           requires:
             - aws-ecr/build-and-push-image
           aws-region: AWS_DEFAULT_REGION
-          family: bittrader-service
-          cluster-name: bittrader-cluster
-          container-image-name-updates: container=bittrader,tag=${CIRCLE_SHA1}
+          family: ${APP_PREFIX}-service
+          cluster-name: ${APP_PREFIX}-cluster
+          container-image-name-updates: container=${APP_PREFIX}-service,tag=${CIRCLE_SHA1}
