@@ -58,8 +58,8 @@ public class BitflyerApi {
         try (InputStream in = new BufferedInputStream(con.getInputStream())) {
             byte[] bytes = ByteStreams.toByteArray(in);
             String body = new String(bytes, UTF_8);
-            System.out.println(code);
-            System.out.println(message);
+            System.out.println("code:" + code);
+            System.out.println("message:" + message);
             System.out.println(body);
         } catch (IOException e) {
             throw new IOException(String.format("%s %s", code, message), e);
