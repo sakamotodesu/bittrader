@@ -5,6 +5,7 @@
     "essential": true,
     "portMappings": [],
     "requires_compatibilities": "FARGATE",
+    "readonlyRootFilesystem": true,
     "logConfiguration": {
       "logDriver": "awslogs",
       "secretOptions": null,
