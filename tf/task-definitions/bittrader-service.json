@@ -1,0 +1,9 @@
+[
+  {
+    "name": "bittrader-service",
+    "image": "616703994274.dkr.ecr.ap-northeast-1.amazonaws.com/bittrader:396080c2edfacb1a53f966f285643e33c9aabeea",
+    "essential": true,
+    "portMappings": [],
+    "requires_compatibilities": "FARGATE"
+  }
+]
