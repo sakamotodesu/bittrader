@@ -14,18 +14,19 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class BitflyerApi {
 
-    public void request() {
+    public String request() {
         try {
             HttpURLConnection con = createConnection();
             try {
                 con = configure(con);
-                receive(con);
+                return receive(con);
             } finally {
                 con.disconnect();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     HttpURLConnection createConnection() throws IOException {
@@ -51,7 +52,7 @@ public class BitflyerApi {
         return con;
     }
 
-    private void receive(HttpURLConnection con) throws IOException {
+    private String receive(HttpURLConnection con) throws IOException {
         int code = con.getResponseCode();
         String message = con.getResponseMessage();
 
@@ -61,6 +62,7 @@ public class BitflyerApi {
             System.out.println("code:" + code);
             System.out.println("message:" + message);
             System.out.println(body);
+            return body;
         } catch (IOException e) {
             throw new IOException(String.format("%s %s", code, message), e);
         }
