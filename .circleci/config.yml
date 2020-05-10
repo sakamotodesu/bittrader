@@ -44,9 +44,9 @@ jobs:
       # run tests!
       - run: gradle test
       - run: gradle shadowjar
-#      - persist_to_workspace:
-#          root: ~/
-#          paths: .
+      - persist_to_workspace:
+          root: ~/repo
+          paths: build/*
 workflows:
   build-and-deploy:
     jobs:
@@ -55,7 +55,7 @@ workflows:
           requires:
             - build
           account-url: AWS_ACCOUNT_URL
-#          attach-workspace: true
+          attach-workspace: true
           repo: ${APP_PREFIX}
           region: AWS_DEFAULT_REGION
           tag: ${CIRCLE_SHA1}
