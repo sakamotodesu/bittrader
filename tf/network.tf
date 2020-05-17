@@ -217,7 +217,7 @@ resource "aws_lb_listener" "redirect_http_to_https" {
 }
 
 resource "aws_lb_target_group" "bittrader-alb-target" {
-  name = "example"
+  name = "bittrader-alb-target"
   vpc_id = aws_vpc.bittrader-vpc.id
   target_type = "ip"
   port = 80
