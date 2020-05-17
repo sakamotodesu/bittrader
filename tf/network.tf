@@ -140,3 +140,118 @@ resource "aws_lb_listener" "http" {
     }
   }
 }
+
+data "aws_route53_zone" "sakamoto-ninja" {
+  name = "sakamoto.ninja"
+}
+
+resource "aws_route53_record" "bittrader-record" {
+  zone_id = data.aws_route53_zone.sakamoto-ninja.zone_id
+  name = data.aws_route53_zone.sakamoto-ninja.name
+  type = "A"
+
+  alias {
+    name = aws_lb.bittrader-alb.dns_name
+    zone_id = aws_lb.bittrader-alb.zone_id
+    evaluate_target_health = true
+  }
+}
+
+resource "aws_acm_certificate" "sakamoto-ninja-acm" {
+  domain_name = data.aws_route53_zone.sakamoto-ninja.name
+  subject_alternative_names = []
+  validation_method = "DNS"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_route53_record" "sakamoto-ninja-certificate" {
+  name = aws_acm_certificate.sakamoto-ninja-acm.domain_validation_options[0].resource_record_name
+  type = aws_acm_certificate.sakamoto-ninja-acm.domain_validation_options[0].resource_record_type
+  records = [
+    aws_acm_certificate.sakamoto-ninja-acm.domain_validation_options[0].resource_record_value]
+  zone_id = data.aws_route53_zone.sakamoto-ninja.id
+  ttl = 60
+}
+
+resource "aws_acm_certificate_validation" "sakamoto-ninja-validation" {
+  certificate_arn = aws_acm_certificate.sakamoto-ninja-acm.arn
+  validation_record_fqdns = [
+    aws_route53_record.sakamoto-ninja-certificate.fqdn]
+}
+
+resource "aws_lb_listener" "https" {
+  load_balancer_arn = aws_lb.bittrader-alb.arn
+  port = "443"
+  protocol = "HTTPS"
+  certificate_arn = aws_acm_certificate.sakamoto-ninja-acm.arn
+  ssl_policy = "ELBSecurityPolicy-2016-08"
+
+  default_action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "これは『HTTPS』です"
+      status_code = "200"
+    }
+  }
+}
+
+resource "aws_lb_listener" "redirect_http_to_https" {
+  load_balancer_arn = aws_lb.bittrader-alb.arn
+  port = "8080"
+  protocol = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port = "443"
+      protocol = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+}
+
+resource "aws_lb_target_group" "bittrader-alb-target" {
+  name = "example"
+  vpc_id = aws_vpc.bittrader-vpc.id
+  target_type = "ip"
+  port = 80
+  protocol = "HTTP"
+  deregistration_delay = 300
+
+  health_check {
+    path = "/"
+    healthy_threshold = 5
+    unhealthy_threshold = 2
+    timeout = 5
+    interval = 30
+    matcher = 200
+    port = "traffic-port"
+    protocol = "HTTP"
+  }
+
+  depends_on = [
+    aws_lb.bittrader-alb]
+}
+
+resource "aws_lb_listener_rule" "bittrader-alb-listener-rule" {
+  listener_arn = aws_lb_listener.https.arn
+  priority = 100
+
+  action {
+    type = "forward"
+    target_group_arn = aws_lb_target_group.bittrader-alb-target.arn
+  }
+
+  condition {
+    path_pattern {
+      values = [
+        "/*"]
+    }
+  }
+}
