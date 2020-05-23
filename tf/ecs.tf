@@ -53,19 +53,38 @@ resource "aws_ecs_service" "bittrader-service" {
   platform_version = "1.3.0"
 
   network_configuration {
-    assign_public_ip = true
+    assign_public_ip = false
     security_groups = [
-      "sg-0577bab4e1fc38cbf"]
+      module.bittrader-ecs-sg.security_group_id]
+
     subnets = [
-      "subnet-02902f75"
+      aws_subnet.bittrader-subnet-private_0.id,
+      aws_subnet.bittrader-subnet-private_1.id,
     ]
   }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.bittrader-alb-target.arn
+    container_name = "bittrader-service"
+    container_port = 8080
+  }
+
 
   lifecycle {
     ignore_changes = [
       task_definition]
   }
 }
+
+module "bittrader-ecs-sg" {
+  source = "./security_group"
+  name = "bittrader-ecs-sg"
+  vpc_id = aws_vpc.bittrader-vpc.id
+  port = 80
+  cidr_blocks = [
+    aws_vpc.bittrader-vpc.cidr_block]
+}
+
 
 resource "aws_ecs_task_definition" "bittrader-service" {
   family = "bittrader-service"

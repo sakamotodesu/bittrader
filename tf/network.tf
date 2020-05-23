@@ -12,6 +12,10 @@ resource "aws_subnet" "bittrader-subnet-private_0" {
   cidr_block = "10.0.65.0/24"
   availability_zone = "ap-northeast-1a"
   map_public_ip_on_launch = false
+
+  tags = {
+    Name = "bittrader-subnet-private_0"
+  }
 }
 
 resource "aws_subnet" "bittrader-subnet-private_1" {
@@ -19,6 +23,10 @@ resource "aws_subnet" "bittrader-subnet-private_1" {
   cidr_block = "10.0.66.0/24"
   availability_zone = "ap-northeast-1c"
   map_public_ip_on_launch = false
+
+  tags = {
+    Name = "bittrader-subnet-private_1"
+  }
 }
 
 resource "aws_subnet" "bittrader-subnet-public_0" {
@@ -26,6 +34,10 @@ resource "aws_subnet" "bittrader-subnet-public_0" {
   cidr_block = "10.0.1.0/24"
   availability_zone = "ap-northeast-1a"
   map_public_ip_on_launch = true
+
+  tags = {
+    Name = "bittrader-subnet-public_0"
+  }
 }
 
 resource "aws_subnet" "bittrader-subnet-public_1" {
@@ -33,6 +45,10 @@ resource "aws_subnet" "bittrader-subnet-public_1" {
   cidr_block = "10.0.2.0/24"
   availability_zone = "ap-northeast-1c"
   map_public_ip_on_launch = true
+
+  tags = {
+    Name = "bittrader-subnet-public_1"
+  }
 }
 
 resource "aws_internet_gateway" "bittrader-igw" {
@@ -220,7 +236,7 @@ resource "aws_lb_target_group" "bittrader-alb-target" {
   name = "bittrader-alb-target"
   vpc_id = aws_vpc.bittrader-vpc.id
   target_type = "ip"
-  port = 80
+  port = 8080
   protocol = "HTTP"
   deregistration_delay = 300
 
