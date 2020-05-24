@@ -55,24 +55,71 @@ resource "aws_internet_gateway" "bittrader-igw" {
   vpc_id = aws_vpc.bittrader-vpc.id
 }
 
-resource "aws_route_table" "bittrader-route-table" {
+resource "aws_eip" "bittrader-nat-gateway-eip_0" {
+  vpc = true
+  depends_on = [
+    aws_internet_gateway.bittrader-igw]
+}
+
+resource "aws_eip" "bittrader-nat-gateway-eip_1" {
+  vpc = true
+  depends_on = [
+    aws_internet_gateway.bittrader-igw]
+}
+
+resource "aws_nat_gateway" "bittrader-nat_0" {
+  allocation_id = aws_eip.bittrader-nat-gateway-eip_0.id
+  subnet_id = aws_subnet.bittrader-subnet-public_0.id
+  depends_on = [
+    aws_internet_gateway.bittrader-igw]
+}
+
+resource "aws_nat_gateway" "bittrader-nat_1" {
+  allocation_id = aws_eip.bittrader-nat-gateway-eip_1.id
+  subnet_id = aws_subnet.bittrader-subnet-public_1.id
+  depends_on = [
+    aws_internet_gateway.bittrader-igw]
+}
+
+resource "aws_route_table" "bittrader-route-table-public" {
   vpc_id = aws_vpc.bittrader-vpc.id
 }
 
-resource "aws_route" "bittrader-route" {
-  route_table_id = aws_route_table.bittrader-route-table.id
+resource "aws_route" "bittrader-route-public" {
+  route_table_id = aws_route_table.bittrader-route-table-public.id
   gateway_id = aws_internet_gateway.bittrader-igw.id
   destination_cidr_block = "0.0.0.0/0"
 }
 
 resource "aws_route_table_association" "public_0" {
   subnet_id = aws_subnet.bittrader-subnet-public_0.id
-  route_table_id = aws_route_table.bittrader-route-table.id
+  route_table_id = aws_route_table.bittrader-route-table-public.id
 }
 
 resource "aws_route_table_association" "public_1" {
   subnet_id = aws_subnet.bittrader-subnet-public_1.id
-  route_table_id = aws_route_table.bittrader-route-table.id
+  route_table_id = aws_route_table.bittrader-route-table-public.id
+}
+
+
+resource "aws_route_table" "bittrader-route-table-private_0" {
+  vpc_id = aws_vpc.bittrader-vpc.id
+}
+
+resource "aws_route_table" "bittrader-route-table-private_1" {
+  vpc_id = aws_vpc.bittrader-vpc.id
+}
+
+resource "aws_route" "bittrader-route-nat-private_0" {
+  route_table_id = aws_route_table.bittrader-route-table-private_0.id
+  nat_gateway_id = aws_nat_gateway.bittrader-nat_0.id
+  destination_cidr_block = "0.0.0.0/0"
+}
+
+resource "aws_route" "bittrader-route-nat-private_1" {
+  route_table_id = aws_route_table.bittrader-route-table-private_1.id
+  nat_gateway_id = aws_nat_gateway.bittrader-nat_1.id
+  destination_cidr_block = "0.0.0.0/0"
 }
 
 
