@@ -122,6 +122,15 @@ resource "aws_route" "bittrader-route-nat-private_1" {
   destination_cidr_block = "0.0.0.0/0"
 }
 
+resource "aws_route_table_association" "private_0" {
+  subnet_id = aws_subnet.bittrader-subnet-private_0.id
+  route_table_id = aws_route_table.bittrader-route-table-private_0.id
+}
+
+resource "aws_route_table_association" "private_1" {
+  subnet_id = aws_subnet.bittrader-subnet-private_1.id
+  route_table_id = aws_route_table.bittrader-route-table-private_1.id
+}
 
 module "bittrader-vpc-sg" {
   source = "./security_group"
