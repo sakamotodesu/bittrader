@@ -66,7 +66,7 @@ resource "aws_ecs_service" "bittrader-service" {
   load_balancer {
     target_group_arn = aws_lb_target_group.bittrader-alb-target.arn
     container_name = "bittrader-service"
-    container_port = 8080
+    container_port = 80
   }
 
 

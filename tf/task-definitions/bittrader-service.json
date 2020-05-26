@@ -6,7 +6,7 @@
     "portMappings": [
       {
         "protocol": "tcp",
-        "containerPort": 8080
+        "containerPort": 80
       }
     ],
     "requires_compatibilities": "FARGATE",
