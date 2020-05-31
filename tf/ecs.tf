@@ -59,7 +59,6 @@ resource "aws_ecs_service" "bittrader-service" {
 
     subnets = [
       aws_subnet.bittrader-subnet-private_0.id,
-      aws_subnet.bittrader-subnet-private_1.id,
     ]
   }
 

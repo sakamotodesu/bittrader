@@ -18,17 +18,6 @@ resource "aws_subnet" "bittrader-subnet-private_0" {
   }
 }
 
-resource "aws_subnet" "bittrader-subnet-private_1" {
-  vpc_id = aws_vpc.bittrader-vpc.id
-  cidr_block = "10.0.66.0/24"
-  availability_zone = "ap-northeast-1c"
-  map_public_ip_on_launch = false
-
-  tags = {
-    Name = "bittrader-subnet-private_1"
-  }
-}
-
 resource "aws_subnet" "bittrader-subnet-public_0" {
   vpc_id = aws_vpc.bittrader-vpc.id
   cidr_block = "10.0.1.0/24"
@@ -61,22 +50,10 @@ resource "aws_eip" "bittrader-nat-gateway-eip_0" {
     aws_internet_gateway.bittrader-igw]
 }
 
-resource "aws_eip" "bittrader-nat-gateway-eip_1" {
-  vpc = true
-  depends_on = [
-    aws_internet_gateway.bittrader-igw]
-}
 
 resource "aws_nat_gateway" "bittrader-nat_0" {
   allocation_id = aws_eip.bittrader-nat-gateway-eip_0.id
   subnet_id = aws_subnet.bittrader-subnet-public_0.id
-  depends_on = [
-    aws_internet_gateway.bittrader-igw]
-}
-
-resource "aws_nat_gateway" "bittrader-nat_1" {
-  allocation_id = aws_eip.bittrader-nat-gateway-eip_1.id
-  subnet_id = aws_subnet.bittrader-subnet-public_1.id
   depends_on = [
     aws_internet_gateway.bittrader-igw]
 }
@@ -106,30 +83,15 @@ resource "aws_route_table" "bittrader-route-table-private_0" {
   vpc_id = aws_vpc.bittrader-vpc.id
 }
 
-resource "aws_route_table" "bittrader-route-table-private_1" {
-  vpc_id = aws_vpc.bittrader-vpc.id
-}
-
 resource "aws_route" "bittrader-route-nat-private_0" {
   route_table_id = aws_route_table.bittrader-route-table-private_0.id
   nat_gateway_id = aws_nat_gateway.bittrader-nat_0.id
   destination_cidr_block = "0.0.0.0/0"
 }
 
-resource "aws_route" "bittrader-route-nat-private_1" {
-  route_table_id = aws_route_table.bittrader-route-table-private_1.id
-  nat_gateway_id = aws_nat_gateway.bittrader-nat_1.id
-  destination_cidr_block = "0.0.0.0/0"
-}
-
 resource "aws_route_table_association" "private_0" {
   subnet_id = aws_subnet.bittrader-subnet-private_0.id
   route_table_id = aws_route_table.bittrader-route-table-private_0.id
-}
-
-resource "aws_route_table_association" "private_1" {
-  subnet_id = aws_subnet.bittrader-subnet-private_1.id
-  route_table_id = aws_route_table.bittrader-route-table-private_1.id
 }
 
 module "bittrader-vpc-sg" {
