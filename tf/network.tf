@@ -7,17 +7,6 @@ resource "aws_vpc" "bittrader-vpc" {
   }
 }
 
-resource "aws_subnet" "bittrader-subnet-private_0" {
-  vpc_id = aws_vpc.bittrader-vpc.id
-  cidr_block = "10.0.65.0/24"
-  availability_zone = "ap-northeast-1a"
-  map_public_ip_on_launch = false
-
-  tags = {
-    Name = "bittrader-subnet-private_0"
-  }
-}
-
 resource "aws_subnet" "bittrader-subnet-public_0" {
   vpc_id = aws_vpc.bittrader-vpc.id
   cidr_block = "10.0.1.0/24"
@@ -76,22 +65,6 @@ resource "aws_route_table_association" "public_0" {
 resource "aws_route_table_association" "public_1" {
   subnet_id = aws_subnet.bittrader-subnet-public_1.id
   route_table_id = aws_route_table.bittrader-route-table-public.id
-}
-
-
-resource "aws_route_table" "bittrader-route-table-private_0" {
-  vpc_id = aws_vpc.bittrader-vpc.id
-}
-
-resource "aws_route" "bittrader-route-nat-private_0" {
-  route_table_id = aws_route_table.bittrader-route-table-private_0.id
-  nat_gateway_id = aws_nat_gateway.bittrader-nat_0.id
-  destination_cidr_block = "0.0.0.0/0"
-}
-
-resource "aws_route_table_association" "private_0" {
-  subnet_id = aws_subnet.bittrader-subnet-private_0.id
-  route_table_id = aws_route_table.bittrader-route-table-private_0.id
 }
 
 module "bittrader-vpc-sg" {
