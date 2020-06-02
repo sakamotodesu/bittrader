@@ -53,12 +53,13 @@ resource "aws_ecs_service" "bittrader-service" {
   platform_version = "1.3.0"
 
   network_configuration {
-    assign_public_ip = false
+    assign_public_ip = true
     security_groups = [
       module.bittrader-ecs-sg.security_group_id]
 
     subnets = [
-      aws_subnet.bittrader-subnet-private_0.id,
+      aws_subnet.bittrader-subnet-public_0.id,
+      aws_subnet.bittrader-subnet-public_1.id
     ]
   }
 
