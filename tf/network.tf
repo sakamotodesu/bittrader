@@ -33,20 +33,6 @@ resource "aws_internet_gateway" "bittrader-igw" {
   vpc_id = aws_vpc.bittrader-vpc.id
 }
 
-resource "aws_eip" "bittrader-nat-gateway-eip_0" {
-  vpc = true
-  depends_on = [
-    aws_internet_gateway.bittrader-igw]
-}
-
-
-resource "aws_nat_gateway" "bittrader-nat_0" {
-  allocation_id = aws_eip.bittrader-nat-gateway-eip_0.id
-  subnet_id = aws_subnet.bittrader-subnet-public_0.id
-  depends_on = [
-    aws_internet_gateway.bittrader-igw]
-}
-
 resource "aws_route_table" "bittrader-route-table-public" {
   vpc_id = aws_vpc.bittrader-vpc.id
 }
