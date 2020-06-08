@@ -66,7 +66,7 @@ resource "aws_ecs_service" "bittrader-service" {
   load_balancer {
     target_group_arn = aws_lb_target_group.bittrader-alb-target.arn
     container_name = "bittrader-service"
-    container_port = 80
+    container_port = 8080
   }
 
 
@@ -80,7 +80,7 @@ module "bittrader-ecs-sg" {
   source = "./security_group"
   name = "bittrader-ecs-sg"
   vpc_id = aws_vpc.bittrader-vpc.id
-  port = 80
+  port = 8080
   cidr_blocks = [
     aws_vpc.bittrader-vpc.cidr_block]
 }
