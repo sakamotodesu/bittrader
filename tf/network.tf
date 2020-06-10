@@ -68,7 +68,7 @@ resource "aws_lb" "bittrader-alb" {
   load_balancer_type = "application"
   internal = false
   idle_timeout = 60
-  enable_deletion_protection = true
+  enable_deletion_protection = false
 
   subnets = [
     aws_subnet.bittrader-subnet-public_0.id,
