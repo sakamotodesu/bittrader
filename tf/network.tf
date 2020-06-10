@@ -124,12 +124,12 @@ resource "aws_lb_listener" "http" {
   protocol = "HTTP"
 
   default_action {
-    type = "fixed-response"
+    type = "redirect"
 
-    fixed_response {
-      content_type = "text/plain"
-      message_body = "これは『HTTP』です"
-      status_code = "200"
+    redirect {
+      port = "443"
+      protocol = "HTTPS"
+      status_code = "HTTP_301"
     }
   }
 }
@@ -189,22 +189,6 @@ resource "aws_lb_listener" "https" {
       content_type = "text/plain"
       message_body = "これは『HTTPS』です"
       status_code = "200"
-    }
-  }
-}
-
-resource "aws_lb_listener" "redirect_http_to_https" {
-  load_balancer_arn = aws_lb.bittrader-alb.arn
-  port = "8080"
-  protocol = "HTTP"
-
-  default_action {
-    type = "redirect"
-
-    redirect {
-      port = "443"
-      protocol = "HTTPS"
-      status_code = "HTTP_301"
     }
   }
 }
