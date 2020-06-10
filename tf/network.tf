@@ -183,13 +183,8 @@ resource "aws_lb_listener" "https" {
   ssl_policy = "ELBSecurityPolicy-2016-08"
 
   default_action {
-    type = "fixed-response"
-
-    fixed_response {
-      content_type = "text/plain"
-      message_body = "これは『HTTPS』です"
-      status_code = "200"
-    }
+    type = "forward"
+    target_group_arn = aws_lb_target_group.bittrader-alb-target.arn
   }
 }
 
@@ -214,21 +209,4 @@ resource "aws_lb_target_group" "bittrader-alb-target" {
 
   depends_on = [
     aws_lb.bittrader-alb]
-}
-
-resource "aws_lb_listener_rule" "bittrader-alb-listener-rule" {
-  listener_arn = aws_lb_listener.https.arn
-  priority = 100
-
-  action {
-    type = "forward"
-    target_group_arn = aws_lb_target_group.bittrader-alb-target.arn
-  }
-
-  condition {
-    path_pattern {
-      values = [
-        "/*"]
-    }
-  }
 }
