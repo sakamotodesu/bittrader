@@ -6,4 +6,4 @@
 
 docker build -t sakamotodesu/bittrader .
 
-docker run -p 80:80 sakamotodesu/bittrader
+docker run -p 8080:8080 sakamotodesu/bittrader
