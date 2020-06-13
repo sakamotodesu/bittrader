@@ -1,11 +1,15 @@
 resource "aws_s3_bucket" "bittrader-alb-log" {
-  bucket = "sakamotodesu-bittrader-alb-log"
+  bucket = "sakamotodesu-${var.service_name}-alb-log"
   lifecycle_rule {
     enabled = true
 
     expiration {
       days = "180"
     }
+  }
+
+  tags = {
+    "Service" = var.service_name
   }
 }
 

@@ -1,9 +1,13 @@
 resource "aws_ecr_repository" "bittrader" {
-  name = "bittrader"
+  name = var.service_name
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
     scan_on_push = false
+  }
+
+  tags = {
+    "Service" = var.service_name
   }
 }
 
@@ -41,11 +45,15 @@ EOF
 }
 
 resource "aws_ecs_cluster" "bittrader-cluster" {
-  name = "bittrader-cluster"
+  name = "${var.service_name}-cluster"
+
+  tags = {
+    "Service" = var.service_name
+  }
 }
 
 resource "aws_ecs_service" "bittrader-service" {
-  name = "bittrader-service"
+  name = "${var.service_name}-service"
   cluster = aws_ecs_cluster.bittrader-cluster.id
   task_definition = aws_ecs_task_definition.bittrader-service.arn
   desired_count = 1
@@ -65,14 +73,16 @@ resource "aws_ecs_service" "bittrader-service" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.bittrader-alb-target.arn
-    container_name = "bittrader-service"
+    container_name = "${var.service_name}-service"
     container_port = 8080
   }
-
 
   lifecycle {
     ignore_changes = [
       task_definition]
+  }
+  tags = {
+    "Service" = var.service_name
   }
 }
 
@@ -87,7 +97,7 @@ module "bittrader-ecs-sg" {
 
 
 resource "aws_ecs_task_definition" "bittrader-service" {
-  family = "bittrader-service"
+  family = "${var.service_name}-service"
   cpu = 256
   memory = 512
   network_mode = "awsvpc"
