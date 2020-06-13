@@ -3,7 +3,7 @@ resource "aws_vpc" "bittrader-vpc" {
   enable_dns_support = true
   enable_dns_hostnames = true
   tags = {
-    Name = "bittrader"
+    Name = var.service_name
   }
 }
 
@@ -14,7 +14,7 @@ resource "aws_subnet" "bittrader-subnet-public_0" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "bittrader-subnet-public_0"
+    Name = "${var.service_name}-subnet-public_0"
   }
 }
 
@@ -25,12 +25,16 @@ resource "aws_subnet" "bittrader-subnet-public_1" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "bittrader-subnet-public_1"
+    Name = "${var.service_name}-subnet-public_1"
   }
 }
 
 resource "aws_internet_gateway" "bittrader-igw" {
   vpc_id = aws_vpc.bittrader-vpc.id
+
+  tags = {
+    "Service" = var.service_name
+  }
 }
 
 resource "aws_route_table" "bittrader-route-table-public" {
@@ -55,7 +59,7 @@ resource "aws_route_table_association" "public_1" {
 
 module "bittrader-vpc-sg" {
   source = "./security_group"
-  name = "bittrader-vpc-sg"
+  name = "${var.service_name}-vpc-sg"
   vpc_id = aws_vpc.bittrader-vpc.id
   port = 80
   cidr_blocks = [
@@ -64,7 +68,7 @@ module "bittrader-vpc-sg" {
 
 
 resource "aws_lb" "bittrader-alb" {
-  name = "bittrader-alb"
+  name = "${var.service_name}-alb"
   load_balancer_type = "application"
   internal = false
   idle_timeout = 60
@@ -85,6 +89,10 @@ resource "aws_lb" "bittrader-alb" {
     module.https_sg.security_group_id,
     module.http_redirect_sg.security_group_id,
   ]
+
+  tags = {
+    "Service" = var.service_name
+  }
 }
 
 module "http_sg" {
@@ -189,7 +197,7 @@ resource "aws_lb_listener" "https" {
 }
 
 resource "aws_lb_target_group" "bittrader-alb-target" {
-  name = "bittrader-alb-target"
+  name = "${var.service_name}-alb-target"
   vpc_id = aws_vpc.bittrader-vpc.id
   target_type = "ip"
   port = 8080
