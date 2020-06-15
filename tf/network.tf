@@ -148,18 +148,18 @@ data "aws_route53_zone" "sakamoto-ninja" {
 
 resource "aws_route53_record" "bittrader-record" {
   zone_id = data.aws_route53_zone.sakamoto-ninja.zone_id
-  name = data.aws_route53_zone.sakamoto-ninja.name
+  name = "bittrader.sakamoto.ninja"
   type = "A"
 
   alias {
     name = aws_lb.bittrader-alb.dns_name
     zone_id = aws_lb.bittrader-alb.zone_id
-    evaluate_target_health = true
+    evaluate_target_health = false
   }
 }
 
-resource "aws_acm_certificate" "sakamoto-ninja-acm" {
-  domain_name = data.aws_route53_zone.sakamoto-ninja.name
+resource "aws_acm_certificate" "sakamoto-ninja-bittrader-acm" {
+  domain_name = aws_route53_record.bittrader-record.name
   subject_alternative_names = []
   validation_method = "DNS"
 
@@ -168,26 +168,26 @@ resource "aws_acm_certificate" "sakamoto-ninja-acm" {
   }
 }
 
-resource "aws_route53_record" "sakamoto-ninja-certificate" {
-  name = aws_acm_certificate.sakamoto-ninja-acm.domain_validation_options[0].resource_record_name
-  type = aws_acm_certificate.sakamoto-ninja-acm.domain_validation_options[0].resource_record_type
+resource "aws_route53_record" "sakamoto-ninja-bittrader-certificate" {
+  name = aws_acm_certificate.sakamoto-ninja-bittrader-acm.domain_validation_options[0].resource_record_name
+  type = aws_acm_certificate.sakamoto-ninja-bittrader-acm.domain_validation_options[0].resource_record_type
   records = [
-    aws_acm_certificate.sakamoto-ninja-acm.domain_validation_options[0].resource_record_value]
+    aws_acm_certificate.sakamoto-ninja-bittrader-acm.domain_validation_options[0].resource_record_value]
   zone_id = data.aws_route53_zone.sakamoto-ninja.id
   ttl = 60
 }
 
 resource "aws_acm_certificate_validation" "sakamoto-ninja-validation" {
-  certificate_arn = aws_acm_certificate.sakamoto-ninja-acm.arn
+  certificate_arn = aws_acm_certificate.sakamoto-ninja-bittrader-acm.arn
   validation_record_fqdns = [
-    aws_route53_record.sakamoto-ninja-certificate.fqdn]
+    aws_route53_record.sakamoto-ninja-bittrader-certificate.fqdn]
 }
 
 resource "aws_lb_listener" "https" {
   load_balancer_arn = aws_lb.bittrader-alb.arn
   port = "443"
   protocol = "HTTPS"
-  certificate_arn = aws_acm_certificate.sakamoto-ninja-acm.arn
+  certificate_arn = aws_acm_certificate.sakamoto-ninja-bittrader-acm.arn
   ssl_policy = "ELBSecurityPolicy-2016-08"
 
   default_action {
