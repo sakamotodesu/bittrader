@@ -1,4 +1,4 @@
 variable "service_name" {
-  type = string
+  type    = string
   default = "bittrader"
 }
