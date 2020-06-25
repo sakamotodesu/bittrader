@@ -1,5 +1,5 @@
 resource "aws_ecr_repository" "bittrader" {
-  name = var.service_name
+  name                 = var.service_name
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
@@ -53,17 +53,17 @@ resource "aws_ecs_cluster" "bittrader-cluster" {
 }
 
 resource "aws_ecs_service" "bittrader-service" {
-  name = "${var.service_name}-service"
-  cluster = aws_ecs_cluster.bittrader-cluster.id
-  task_definition = aws_ecs_task_definition.bittrader-service.arn
-  desired_count = 1
-  launch_type = "FARGATE"
+  name             = "${var.service_name}-service"
+  cluster          = aws_ecs_cluster.bittrader-cluster.id
+  task_definition  = aws_ecs_task_definition.bittrader-service.arn
+  desired_count    = 1
+  launch_type      = "FARGATE"
   platform_version = "1.3.0"
 
   network_configuration {
     assign_public_ip = true
     security_groups = [
-      module.bittrader-ecs-sg.security_group_id]
+    module.bittrader-ecs-sg.security_group_id]
 
     subnets = [
       aws_subnet.bittrader-subnet-public_0.id,
@@ -73,13 +73,13 @@ resource "aws_ecs_service" "bittrader-service" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.bittrader-alb-target.arn
-    container_name = "${var.service_name}-service"
-    container_port = 8080
+    container_name   = "${var.service_name}-service"
+    container_port   = 8080
   }
 
   lifecycle {
     ignore_changes = [
-      task_definition]
+    task_definition]
   }
   tags = {
     "Service" = var.service_name
@@ -88,21 +88,21 @@ resource "aws_ecs_service" "bittrader-service" {
 
 module "bittrader-ecs-sg" {
   source = "./security_group"
-  name = "bittrader-ecs-sg"
+  name   = "bittrader-ecs-sg"
   vpc_id = aws_vpc.bittrader-vpc.id
-  port = 8080
+  port   = 8080
   cidr_blocks = [
-    aws_vpc.bittrader-vpc.cidr_block]
+  aws_vpc.bittrader-vpc.cidr_block]
 }
 
 
 resource "aws_ecs_task_definition" "bittrader-service" {
-  family = "${var.service_name}-service"
-  cpu = 256
-  memory = 512
-  network_mode = "awsvpc"
+  family             = "${var.service_name}-service"
+  cpu                = 256
+  memory             = 512
+  network_mode       = "awsvpc"
   execution_role_arn = "arn:aws:iam::616703994274:role/ecsTaskExecutionRole"
   requires_compatibilities = [
-    "FARGATE"]
+  "FARGATE"]
   container_definitions = file("task-definitions/bittrader-service.json")
 }

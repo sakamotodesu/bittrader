@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     bucket = "sakamotodesu-bittrader-tfstate"
-    key = "terraform.tfstate"
+    key    = "terraform.tfstate"
     region = "ap-northeast-1"
   }
   required_version = "= 0.12.23"
@@ -9,5 +9,5 @@ terraform {
 
 provider "aws" {
   version = "= 2.52.0"
-  region = "ap-northeast-1"
+  region  = "ap-northeast-1"
 }
