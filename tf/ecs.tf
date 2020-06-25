@@ -11,37 +11,37 @@ resource "aws_ecr_repository" "bittrader" {
   }
 }
 
+data "aws_iam_policy_document" "bittrader-policy-document" {
+  version = "2008-10-17"
+  statement {
+    principals {
+      type = "AWS"
+      identifiers = [
+      "arn:aws:iam::616703994274:user/bittrader-ecs-ecr"]
+    }
+    actions = [
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:BatchGetImage",
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:PutImage",
+      "ecr:InitiateLayerUpload",
+      "ecr:UploadLayerPart",
+      "ecr:CompleteLayerUpload",
+      "ecr:DescribeRepositories",
+      "ecr:GetRepositoryPolicy",
+      "ecr:ListImages",
+      "ecr:DeleteRepository",
+      "ecr:BatchDeleteImage",
+      "ecr:SetRepositoryPolicy",
+      "ecr:DeleteRepositoryPolicy"
+    ]
+    effect = "Allow"
+    sid    = "circleci_allow"
+  }
+}
 resource "aws_ecr_repository_policy" "bittrader-policy" {
   repository = aws_ecr_repository.bittrader.name
-
-  policy = <<EOF
-{
-    "Version": "2008-10-17",
-    "Statement": [
-        {
-            "Sid": "circleci_allow",
-            "Effect": "Allow",
-            "Principal": "*",
-            "Action": [
-                "ecr:GetDownloadUrlForLayer",
-                "ecr:BatchGetImage",
-                "ecr:BatchCheckLayerAvailability",
-                "ecr:PutImage",
-                "ecr:InitiateLayerUpload",
-                "ecr:UploadLayerPart",
-                "ecr:CompleteLayerUpload",
-                "ecr:DescribeRepositories",
-                "ecr:GetRepositoryPolicy",
-                "ecr:ListImages",
-                "ecr:DeleteRepository",
-                "ecr:BatchDeleteImage",
-                "ecr:SetRepositoryPolicy",
-                "ecr:DeleteRepositoryPolicy"
-            ]
-        }
-    ]
-}
-EOF
+  policy     = data.aws_iam_policy_document.bittrader-policy-document.json
 }
 
 resource "aws_ecs_cluster" "bittrader-cluster" {
