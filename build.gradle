@@ -25,8 +25,6 @@ dependencies {
     // This dependency is used by the application.
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'com.google.guava:guava:29.0-jre'
-    implementation platform('com.amazonaws:aws-java-sdk-bom:1.11.826')
-    implementation 'com.amazonaws:aws-java-sdk-ssm'
 
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 
