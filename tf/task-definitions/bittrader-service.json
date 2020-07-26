@@ -9,6 +9,12 @@
         "containerPort": 8080
       }
     ],
+    "secrets": [
+      {
+        "valueFrom": "arn:aws:ssm:ap-northeast-1:616703994274:parameter/bittrader/api/token",
+        "name": "/bittrader/api/token"
+      }
+    ],
     "requires_compatibilities": "FARGATE",
     "logConfiguration": {
       "logDriver": "awslogs",
