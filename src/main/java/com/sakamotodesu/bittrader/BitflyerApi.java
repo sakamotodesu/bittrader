@@ -55,7 +55,6 @@ public class BitflyerApi {
     private String receive(HttpURLConnection con) throws IOException {
         int code = con.getResponseCode();
         String message = con.getResponseMessage();
-        SimpleSystemsManagementParas ssm = new SimpleSystemsManagementParas();
 
         try (InputStream in = new BufferedInputStream(con.getInputStream())) {
             byte[] bytes = ByteStreams.toByteArray(in);
@@ -63,7 +62,7 @@ public class BitflyerApi {
             System.out.println("code:" + code);
             System.out.println("message:" + message);
             System.out.println(body);
-            System.out.println(ssm.getToken("/bittrader/api/token").substring(0, 5));
+            System.out.println("env:" + System.getenv("/bittrader/api/token").substring(0, 5));
             return body;
         } catch (IOException e) {
             throw new IOException(String.format("%s %s", code, message), e);
