@@ -7,7 +7,13 @@ resource "aws_s3_bucket" "bittrader-alb-log" {
       days = "180"
     }
   }
-
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
   tags = {
     "Service" = var.service_name
   }
