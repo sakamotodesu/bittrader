@@ -62,7 +62,13 @@ public class BitflyerApi {
             System.out.println("code:" + code);
             System.out.println("message:" + message);
             System.out.println(body);
-            System.out.println("env:" + System.getenv("/bittrader/api/token").substring(0, 5));
+
+            String token = System.getenv("/bittrader/api/token");
+            if (token != null) {
+                System.out.println("env:" + token.substring(0, 5));
+            } else {
+                System.out.println("env: token is null");
+            }
             return body;
         } catch (IOException e) {
             throw new IOException(String.format("%s %s", code, message), e);
