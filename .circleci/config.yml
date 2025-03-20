@@ -9,14 +9,8 @@ orbs:
 jobs:
   build:
     docker:
-      # specify the version you desire here
-      - image: circleci/openjdk:11-jdk
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
-
+      - image: cimg/openjdk:11.0
+    resource_class: medium
     working_directory: ~/repo
 
     environment:
@@ -59,6 +53,7 @@ workflows:
           repo: ${APP_PREFIX}
           region: AWS_DEFAULT_REGION
           tag: ${CIRCLE_SHA1}
+          resource_class: medium
       - aws-ecs/deploy-service-update:
           requires:
             - aws-ecr/build-and-push-image
