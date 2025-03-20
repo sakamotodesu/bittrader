@@ -34,7 +34,7 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClassName = 'com.sakamotodesu.bittrader.App'
+    mainClass = 'com.sakamotodesu.bittrader.App'
 }
 
 jar {
@@ -60,4 +60,13 @@ publishing {
 // Spring Bootの設定
 springBoot {
     mainClass = 'com.sakamotodesu.bittrader.App'
+}
+
+// 非推奨APIの使用を解消
+tasks.withType(JavaCompile) {
+    options.release = 11
+}
+
+tasks.withType(ProcessResources) {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
