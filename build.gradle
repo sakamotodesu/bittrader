@@ -8,7 +8,7 @@
 
 plugins {
     id 'java'
-    id 'maven'
+    id 'maven-publish'
     id 'application'
     id 'com.github.johnrengelman.shadow' version '5.2.0'
     id 'org.springframework.boot' version '2.2.7.RELEASE'
@@ -42,11 +42,16 @@ jar {
     }
 }
 
-// Mavenプラグインの設定
-uploadArchives {
+// Maven Publishプラグインの設定
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
     repositories {
-        mavenDeployer {
-            repository(url: "file://localhost/tmp/myRepo/")
+        maven {
+            url = "$buildDir/repo"
         }
     }
 }
