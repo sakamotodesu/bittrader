@@ -8,6 +8,7 @@
 
 plugins {
     id 'java'
+    id 'maven'
     id 'application'
     id 'com.github.johnrengelman.shadow' version '5.2.0'
     id 'org.springframework.boot' version '2.2.7.RELEASE'
@@ -38,5 +39,14 @@ application {
 jar {
     manifest {
         attributes 'Main-Class': 'com.sakamotodesu.bittrader.App'
+    }
+}
+
+// Mavenプラグインの設定
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "file://localhost/tmp/myRepo/")
+        }
     }
 }
