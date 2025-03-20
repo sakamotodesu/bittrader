@@ -77,6 +77,11 @@ resource "aws_ecs_service" "bittrader-service" {
     container_port   = 8080
   }
 
+  depends_on = [
+    aws_lb_listener.https,
+    aws_lb_target_group.bittrader-alb-target
+  ]
+
   lifecycle {
     ignore_changes = [
     task_definition]

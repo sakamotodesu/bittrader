@@ -169,18 +169,24 @@ resource "aws_acm_certificate" "sakamoto-ninja-bittrader-acm" {
 }
 
 resource "aws_route53_record" "sakamoto-ninja-bittrader-certificate" {
-  name = aws_acm_certificate.sakamoto-ninja-bittrader-acm.domain_validation_options[0].resource_record_name
-  type = aws_acm_certificate.sakamoto-ninja-bittrader-acm.domain_validation_options[0].resource_record_type
-  records = [
-  aws_acm_certificate.sakamoto-ninja-bittrader-acm.domain_validation_options[0].resource_record_value]
+  for_each = {
+    for dvo in aws_acm_certificate.sakamoto-ninja-bittrader-acm.domain_validation_options : dvo.domain_name => {
+      name   = dvo.resource_record_name
+      record = dvo.resource_record_value
+      type   = dvo.resource_record_type
+    }
+  }
+
+  name    = each.value.name
+  type    = each.value.type
+  records = [each.value.record]
   zone_id = data.aws_route53_zone.sakamoto-ninja.id
   ttl     = 60
 }
 
 resource "aws_acm_certificate_validation" "sakamoto-ninja-validation" {
-  certificate_arn = aws_acm_certificate.sakamoto-ninja-bittrader-acm.arn
-  validation_record_fqdns = [
-  aws_route53_record.sakamoto-ninja-bittrader-certificate.fqdn]
+  certificate_arn         = aws_acm_certificate.sakamoto-ninja-bittrader-acm.arn
+  validation_record_fqdns = [for record in aws_route53_record.sakamoto-ninja-bittrader-certificate : record.fqdn]
 }
 
 resource "aws_lb_listener" "https" {
@@ -194,6 +200,11 @@ resource "aws_lb_listener" "https" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.bittrader-alb-target.arn
   }
+
+  depends_on = [
+    aws_acm_certificate_validation.sakamoto-ninja-validation,
+    aws_lb_target_group.bittrader-alb-target
+  ]
 }
 
 resource "aws_lb_target_group" "bittrader-alb-target" {
@@ -215,6 +226,5 @@ resource "aws_lb_target_group" "bittrader-alb-target" {
     protocol            = "HTTP"
   }
 
-  depends_on = [
-  aws_lb.bittrader-alb]
+  depends_on = [aws_lb.bittrader-alb]
 }

@@ -1,12 +1,5 @@
 resource "aws_s3_bucket" "bittrader-alb-log" {
   bucket = "sakamotodesu-${var.service_name}-alb-log"
-  lifecycle_rule {
-    enabled = true
-
-    expiration {
-      days = "180"
-    }
-  }
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
@@ -16,6 +9,17 @@ resource "aws_s3_bucket" "bittrader-alb-log" {
   }
   tags = {
     "Service" = var.service_name
+  }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "bittrader-alb-log" {
+  bucket = aws_s3_bucket.bittrader-alb-log.id
+  rule {
+    id     = "expire_after_180_days"
+    status = "Enabled"
+    expiration {
+      days = 180
+    }
   }
 }
 
