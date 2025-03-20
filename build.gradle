@@ -15,21 +15,19 @@ plugins {
     id 'war'
 }
 
-
 repositories {
     mavenCentral()
-    jcenter()
 }
 
 dependencies {
     // This dependency is used by the application.
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'com.google.guava:guava:29.0-jre'
+    implementation 'com.google.guava:guava:31.1-jre'
 
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 
     // Use JUnit test framework
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.2'
 }
 
 application {
