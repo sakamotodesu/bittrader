@@ -8,6 +8,7 @@
 
 plugins {
     id 'java'
+    id 'maven'
     id 'maven-publish'
     id 'application'
     id 'com.github.johnrengelman.shadow' version '5.2.0'
@@ -34,7 +35,7 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass = 'com.sakamotodesu.bittrader.App'
+    mainClassName = 'com.sakamotodesu.bittrader.App'
 }
 
 jar {
@@ -59,14 +60,19 @@ publishing {
 
 // Spring Bootの設定
 springBoot {
-    mainClass = 'com.sakamotodesu.bittrader.App'
+    mainClassName = 'com.sakamotodesu.bittrader.App'
 }
 
-// 非推奨APIの使用を解消
-tasks.withType(JavaCompile) {
-    options.release = 11
-}
+// Java 11の設定
+sourceCompatibility = '11'
+targetCompatibility = '11'
 
 tasks.withType(ProcessResources) {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
+// Shadowプラグインの設定を追加
+shadowJar {
+    archiveClassifier.set('')
+    mergeServiceFiles()
 }
