@@ -24,6 +24,7 @@ dependencies {
     // This dependency is used by the application.
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'com.google.guava:guava:31.1-jre'
+    implementation 'org.springframework.boot:spring-boot-starter'
 
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 
@@ -54,4 +55,9 @@ publishing {
             url = "$buildDir/repo"
         }
     }
+}
+
+// Spring Bootの設定
+springBoot {
+    mainClass = 'com.sakamotodesu.bittrader.App'
 }
