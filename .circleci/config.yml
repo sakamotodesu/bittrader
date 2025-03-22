@@ -4,8 +4,9 @@
 #
 version: 2.1
 orbs:
-  aws-ecr: circleci/aws-ecr@6.8.2
+  aws-ecr: circleci/aws-ecr@9.3.5
   aws-ecs: circleci/aws-ecs@1.1.0
+  aws-cli: circleci/aws-cli@4.1
 jobs:
   build:
     docker:
@@ -51,17 +52,23 @@ workflows:
   build-and-deploy:
     jobs:
       - build
-      - aws-ecr/build-and-push-image:
+      - aws-ecr/build_and_push_image:
           requires:
             - build
-          account-url: AWS_ACCOUNT_URL
-          attach-workspace: true
           repo: ${APP_PREFIX}
-          region: AWS_DEFAULT_REGION
+          region: ${AWS_DEFAULT_REGION}
           tag: ${CIRCLE_SHA1}
+          executor: aws-ecr/default
+          account_id: ${AWS_ACCOUNT_ID}
+          auth:
+            - aws-cli/setup:
+                region: ${AWS_DEFAULT_REGION}
+          attach_workspace: true
+          path: .
+          dockerfile: ./Dockerfile
       - aws-ecs/deploy-service-update:
           requires:
-            - aws-ecr/build-and-push-image
+            - aws-ecr/build_and_push_image
           aws-region: AWS_DEFAULT_REGION
           family: ${APP_PREFIX}-service
           cluster-name: ${APP_PREFIX}-cluster
