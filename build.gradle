@@ -3,18 +3,22 @@
  *
  * This generated file contains a sample Java project to get you started.
  * For more details take a look at the Java Quickstart chapter in the Gradle
- * User Manual available at https://docs.gradle.org/6.3/userguide/tutorial_java_projects.html
+ * User Manual available at https://docs.gradle.org/8.6/userguide/tutorial_java_projects.html
  */
 
 plugins {
     id 'java'
     id 'application'
     id 'com.github.johnrengelman.shadow' version '8.1.1'
-    id 'org.springframework.boot' version '3.4.4'
+    id 'org.springframework.boot' version '2.7.18'
     id "io.spring.dependency-management" version "1.1.7"
     id 'war'
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
 
 repositories {
     mavenCentral()
