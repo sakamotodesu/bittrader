@@ -3,18 +3,22 @@
  *
  * This generated file contains a sample Java project to get you started.
  * For more details take a look at the Java Quickstart chapter in the Gradle
- * User Manual available at https://docs.gradle.org/6.3/userguide/tutorial_java_projects.html
+ * User Manual available at https://docs.gradle.org/8.6/userguide/tutorial_java_projects.html
  */
 
 plugins {
     id 'java'
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '5.2.0'
-    id 'org.springframework.boot' version '2.2.7.RELEASE'
-    id "io.spring.dependency-management" version "1.0.9.RELEASE"
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'org.springframework.boot' version '2.7.18'
+    id "io.spring.dependency-management" version "1.1.7"
     id 'war'
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
 
 repositories {
     mavenCentral()
@@ -24,12 +28,12 @@ repositories {
 dependencies {
     // This dependency is used by the application.
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'com.google.guava:guava:29.0-jre'
+    implementation 'com.google.guava:guava:33.4.5-jre'
 
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 
     // Use JUnit test framework
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.2'
 }
 
 application {
