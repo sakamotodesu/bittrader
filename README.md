@@ -15,11 +15,11 @@ docker run -p 8080:8080 sakamotodesu/bittrader
 
 ## Terraform
 
-> Terraform 1.0.11
+> Terraform 1.11.2
 
 ```bash
 # Terraformのバージョンを設定
-tfenv use 1.0.11
+tfenv use 1.11.2
 
 # AWS SSOで認証
 aws sso login --profile <プロファイル名>
@@ -50,7 +50,7 @@ Bittraderは、AWS上で動作する暗号資産取引システムです。
 
 ## 前提条件
 - AWS CLI v2
-- Terraform v1.0.11
+- Terraform v1.11.2
 - jq
 
 ## セットアップ手順
