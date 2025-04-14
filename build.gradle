@@ -30,7 +30,7 @@ repositories {
 dependencies {
     // This dependency is used by the application.
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'com.google.guava:guava:33.4.6-jre'
+    implementation 'com.google.guava:guava:33.4.8-jre'
 
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 
