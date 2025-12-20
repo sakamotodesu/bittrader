@@ -1,6 +1,6 @@
 # bittrader
 
-[![sakamotodesu](https://circleci.com/gh/sakamotodesu/bittrader.svg?style=svg)](https://app.circleci.com/pipelines/github/sakamotodesu/bittrader)
+[![CI](https://github.com/sakamotodesu/bittrader/actions/workflows/ci.yml/badge.svg)](https://github.com/sakamotodesu/bittrader/actions/workflows/ci.yml)
 
 
 ## Build
